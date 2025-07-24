@@ -2,45 +2,47 @@ import api from "./api";
 import { Task } from "../interface/Task";
 import { TaskRequest } from "../interface/TaskRequest";
 
+// Função utilitária para padronizar erros
+function handleApiError(action: string, error: unknown): never {
+  console.error(`❌ Erro ao ${action}:`, error);
+  throw new Error(`Erro ao ${action}`);
+}
+
+// Buscar tarefas
 export async function fetchTasks(): Promise<Task[]> {
   try {
-    const res = await api.get<Task[]>('/tasks');
-    return res.data;
+    const { data } = await api.get<Task[]>('/tasks');
+    return data;
   } catch (error) {
-    console.error('❌ Erro ao buscar tarefas:', error);
-    throw new Error('Erro ao buscar tarefas');
+    handleApiError('buscar tarefas', error);
   }
 }
 
+// Criar tarefa
 export async function createTask(task: TaskRequest): Promise<Task> {
   try {
-    const response = await api.post('/tasks', task);
-    return response.data
+    const { data } = await api.post<Task>('/tasks', task);
+    return data;
   } catch (error) {
-    console.error('❌ Erro ao criar tarefa:', error);
-    throw new Error('Erro ao criar tarefa');
+    handleApiError('criar tarefa', error);
   }
 }
 
-export async function updateDoneTask(task :Task): Promise<Task> {
+// Atualizar tarefa (genérica: pode alterar título e/ou done)
+export async function updateTask(id: number, updates: Partial<Task>): Promise<Task> {
   try {
-    const response = await api.patch<Task>(`/tasks/${task.id}`, {
-      done: !task.done,
-    });
-    return response.data;
+    const { data } = await api.patch<Task>(`/tasks/${id}`, updates);
+    return data;
   } catch (error) {
-    console.error('❌ Erro ao atualizar tarefa:', error);
-    throw new Error('Erro ao atualizar tarefa');
+    handleApiError('atualizar tarefa', error);
   }
 }
 
-export async function deleteTask(id: number): Promise<void>{
+// Deletar tarefa
+export async function deleteTask(id: number): Promise<void> {
   try {
     await api.delete(`/tasks/${id}`);
   } catch (error) {
-    console.error('❌ Erro ao deletar tarefa:', error);
-    throw new Error('Erro ao deletar tarefa')
+    handleApiError('deletar tarefa', error);
   }
 }
-
-
