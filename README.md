@@ -10,7 +10,7 @@ Este é um aplicativo de gerenciamento de tarefas que desenvolvi com **React Nat
 
 A ideia foi criar algo **simples e funcional**, mas que também tivesse **uma experiência de uso agradável** e uma base de código **fácil de manter e evoluir** — como se fosse um app real de lista de tarefas.
 
-![Screenshot do app](assets/home.jpeg) ![Screenshot do app](assets/update.jpeg)
+![Screenshot do app start](assets/home.jpeg)  ![Screenshot do app update task](assets/update.jpeg) 
 
 ## Funcionalidades
 - Adicionar novas tarefas
