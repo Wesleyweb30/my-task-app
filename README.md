@@ -10,6 +10,8 @@ Este é um aplicativo de gerenciamento de tarefas que desenvolvi com **React Nat
 
 A ideia foi criar algo **simples e funcional**, mas que também tivesse **uma experiência de uso agradável** e uma base de código **fácil de manter e evoluir** — como se fosse um app real de lista de tarefas.
 
+![Screenshot do app](assets/home.jpeg) ![Screenshot do app](assets/update.jpeg)
+
 ## Funcionalidades
 - Adicionar novas tarefas
 - Marcar tarefas como **concluídas** ou **pendentes**
@@ -57,7 +59,7 @@ Crie um arquivo `db.json` na raiz do projeto com o conteúdo inicial:
 ```
 E rode:
 ```bash
-npx json-server --watch db.json --port 3001
+ json-server --watch db.json --port 3001
 ```
 
 4. **Configure a URL da API**
