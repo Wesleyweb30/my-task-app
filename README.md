@@ -65,7 +65,7 @@ No arquivo `src/services/api.ts` aponte para a URL do JSON Server:
 ```ts
 import axios from "axios";
 export default axios.create({
-  baseURL: "http://localhost:3001"
+  baseURL: "http://localhost:3000"
 });
 ```
 
