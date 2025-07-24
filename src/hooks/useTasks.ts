@@ -1,7 +1,6 @@
-// src/hooks/useTasks.ts
 import { useEffect, useState } from 'react';
 import { Task } from '../interface/Task';
-import { createTask, deleteTask, fetchTasks, updateDoneTask } from '../services/TaskService';
+import { createTask, deleteTask, fetchTasks, updateTask } from '../services/TaskService';
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -13,57 +12,53 @@ export function useTasks() {
     load();
   }, []);
 
-
   async function load() {
     try {
+      setLoading(true);
       const data = await fetchTasks();
       setTasks(data);
     } catch (err: any) {
-      setError('Erro ao carregar tarefas');
+      setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const handleCreate = async (titulo: string) => {
     try {
-      const newTask: Task = {
-        title: titulo,
-        done: false
-      }
+      const newTask: Task = { title: titulo, done: false };
       const data = await createTask(newTask);
-      if (data) {
-        console.log('cadastrou com sucesso', data)
-        setTasks((prev) => [data, ...prev]);
-        setTitulo('');
-      }
-    } catch (error) {
-      console.error('Erro ao criar tarefa:', error);
-      setError('Erro ao criar tarefa');
+      setTasks((prev) => [data, ...prev]);
+      setTitulo('');
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
-  const handleDone = async (taskUpdate: Task) => {
+  const handleToggleDone = async (task: Task) => {
     try {
-      const data = await updateDoneTask(taskUpdate);
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === data.id ? data : task
-        )
-      );
-    } catch (error) {
-      console.error('Erro ao atualizar tarefa:', error);
-      setError('Erro ao atualizar tarefa');
+      const updated = await updateTask(task.id!, { done: !task.done });
+      setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const handleEdit = async (taskId: number, newTitle: string) => {
+    try {
+      const updated = await updateTask(taskId, { title: newTitle });
+      setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
   const handleDelete = async (taskId: number) => {
     try {
-      await deleteTask(taskId)
+      await deleteTask(taskId);
       setTasks((prev) => prev.filter((task) => task.id !== taskId));
-    } catch (error) {
-      console.error('Erro ao deletar tarefa:', error);
-      setError('Erro ao deletar tarefa');
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
@@ -74,10 +69,10 @@ export function useTasks() {
     loading,
     error,
     action: {
-      handleDone,
+      handleToggleDone,
       handleCreate,
+      handleEdit,
       handleDelete
     },
   };
-
-};
+}
