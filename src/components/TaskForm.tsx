@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
-import { useTasks } from '../hooks/useTasks';
+import { Feather as Icon } from '@expo/vector-icons';
 
 interface TaskFormProps {
     titulo: string;
@@ -8,66 +8,34 @@ interface TaskFormProps {
     onCreate: (titulo: string) => void;
 }
 
-
 export function TaskForm({ titulo, setTitulo, onCreate }: TaskFormProps) {
-
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Nova Tarefa</Text>
-            <View style={styles.containerInput}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Ex: Passear com o pet"
-                    placeholderTextColor={'#e1e1e1'}
-                    value={titulo}
-                    onChangeText={setTitulo}
-                />
-            </View>
-
-            <TouchableOpacity style={styles.buttonPrimary}
+            <TextInput
+                style={styles.input}
+                placeholder="Ex: Passear com o pet"
+                placeholderTextColor={'#aaa'}
+                value={titulo}
+                onChangeText={setTitulo}
+            />
+            <TouchableOpacity
+                style={styles.buttonPrimary}
                 onPress={() => {
+                    if (!titulo.trim()) return Alert.alert('Digite um título!');
                     onCreate(titulo);
-                    Alert.alert('Salvou')
                 }}>
-                <Text>Adicionar Tarefa</Text>
+                <Icon name="plus" size={20} color="#fff" />
+                <Text style={styles.buttonText}>Adicionar</Text>
             </TouchableOpacity>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: { 
-        backgroundColor: '#151515', 
-        alignItems: 'center', 
-        padding: 20
-    },
-    title: { 
-        fontSize: 24, 
-        fontWeight: 'bold', 
-        textAlign: 'center', 
-        marginVertical: 20, 
-        color: 'blue'
-    },
-    containerInput: {
-        width: '80%',
-    },
-    input: {
-        borderBottomWidth: 1.5,
-        borderBottomColor: 'blue',
-        marginBottom: 10,
-        borderRadius: 5,
-        fontSize: 20,
-        color: '#fff',
-    },
-    buttonPrimary: {
-        width: 200,
-        height: 50,
-        borderRadius: 30,
-        backgroundColor: 'blue',
-        justifyContent: 'center',
-        alignItems: 'center',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-    }
+    container: { backgroundColor: '#fff', alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: '#ddd' },
+    title: { fontSize: 22, fontWeight: 'bold', color: '#333', marginBottom: 15 },
+    input: { width: '90%', backgroundColor: '#f0f0f0', borderRadius: 8, padding: 12, fontSize: 16, color: '#333', marginBottom: 15 },
+    buttonPrimary: { flexDirection: 'row', alignItems: 'center', gap: 8, width: 200, height: 45, borderRadius: 25, backgroundColor: '#007bff', justifyContent: 'center' },
+    buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
 });
