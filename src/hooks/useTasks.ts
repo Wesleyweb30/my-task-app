@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react';
 import { Task } from '../interface/Task';
 import { createTask, deleteTask, fetchTasks, updateTask } from '../services/TaskService';
 
+type FilterType = 'all' | 'done' | 'pending';
+
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [titulo, setTitulo] = useState<string>('');
+  const [filter, setFilter] = useState<FilterType>('all');
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     load();
@@ -62,17 +66,26 @@ export function useTasks() {
     }
   };
 
+  // Filtro + Busca
+  const filteredTasks = tasks.filter((task) => {
+    const matchesFilter = 
+      filter === 'all' ? true :
+      filter === 'done' ? task.done :
+      !task.done;
+    const matchesSearch = task.title.toLowerCase().includes(search.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
   return {
-    tasks,
+    tasks: filteredTasks,
     titulo,
     setTitulo,
     loading,
     error,
-    action: {
-      handleToggleDone,
-      handleCreate,
-      handleEdit,
-      handleDelete
-    },
+    filter,
+    setFilter,
+    search,
+    setSearch,
+    action: { handleToggleDone, handleCreate, handleEdit, handleDelete },
   };
 }
