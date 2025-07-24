@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View, Text, FlatList, ActivityIndicator, StyleSheet,
-  TouchableOpacity, LayoutAnimation, UIManager, Platform, Pressable, Alert, TextInput, Modal
+  TouchableOpacity, LayoutAnimation, UIManager, Platform, Pressable, Alert, TextInput, Modal, Animated
 } from 'react-native';
 import { Feather as Icon } from '@expo/vector-icons';
 import { Task } from '../interface/Task';
@@ -46,6 +46,14 @@ export default function TaskList({ tasks, loading, error, onDone, onDelete, onEd
     }
   };
 
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const triggerScale = () => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, { toValue: 1.3, duration: 150, useNativeDriver: true }),
+      Animated.timing(scaleAnim, { toValue: 1, duration: 150, useNativeDriver: true })
+    ]).start();
+  };
+
   if (loading) return <ActivityIndicator size="large" color="#007bff" style={{ marginTop: 20 }} />;
   if (error) return <Text style={styles.error}>Erro: {error}</Text>;
   if (tasks.length === 0) return <Text style={styles.empty}>Nenhuma tarefa encontrada.</Text>;
@@ -57,20 +65,20 @@ export default function TaskList({ tasks, loading, error, onDone, onDelete, onEd
         keyExtractor={(item) => item.id!.toString()}
         renderItem={({ item }) => (
           <Pressable
-            onPress={() => { animate(); onDone(item); }}
+            onPress={() => { triggerScale(); animate(); onDone(item); }}
             android_ripple={{ color: '#ccc' }}
             style={[styles.item, item.done ? styles.itemTrue : styles.itemFalse]}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-              <View style={item.done ? styles.toggleDone : styles.togglePending}>
+              <Animated.View style={[item.done ? styles.toggleDone : styles.togglePending, { transform: [{ scale: scaleAnim }] }]}>
                 {item.done && <Icon name="check" size={16} color="#fff" />}
-              </View>
+              </Animated.View>
               <Text style={[styles.itemTitle, item.done && styles.itemTitleDone]} numberOfLines={1}>
                 {item.title}
               </Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 10 }}>
               <TouchableOpacity onPress={() => openEditModal(item)}>
-                <Icon name="edit" size={20} color="#007bff" />
+                <Icon name="edit" size={18} color="#007bff" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDelete(item.id!)}>
                 <Icon name="trash-2" size={18} color="#fff" />
@@ -79,8 +87,7 @@ export default function TaskList({ tasks, loading, error, onDone, onDelete, onEd
           </Pressable>
         )}
       />
-
-      {/* Modal de edição */}
+      {/* Modal igual antes */}
       <Modal visible={editModalVisible} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
