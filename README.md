@@ -4,7 +4,6 @@
 ![React Native](https://img.shields.io/badge/React%20Native-blue)
 ![Expo](https://img.shields.io/badge/Expo-lightgrey)
 ![TypeScript](https://img.shields.io/badge/TypeScript-blue)
-![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
 
 Este é um aplicativo de gerenciamento de tarefas que desenvolvi com **React Native** (usando **Expo**) para **praticar conceitos importantes** como CRUD completo, animações no React Native e boas práticas de organização de código.
 
